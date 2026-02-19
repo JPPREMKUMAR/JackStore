@@ -7,8 +7,10 @@ const Navbar = () => {
 
     const [visiable, setVisiable] = useState(false)
 
-    const { setShowSearch, totalCount, navigate, token, setToken, setCartItems } = useContext(ShopContext)
+    const { setShowSearch, totalCount, navigate, token, setToken, cartItems, setCartItems } = useContext(ShopContext)
 
+
+    //console.log(cartItems)
 
     const logout = () => {
         navigate("/login")
@@ -71,7 +73,7 @@ const Navbar = () => {
                 </div>
 
 
-                <Link to="/cart" className="relative" >
+                <Link to="/carts" className="relative" >
 
                     <img
                         src={assets.cart_icon}

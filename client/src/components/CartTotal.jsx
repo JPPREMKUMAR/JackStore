@@ -7,10 +7,10 @@ import Title from "../components/Title"
 
 
 const CartTotal = () => {
-    const { currency, delivery_fee, getCartAmount } = useContext(ShopContext)
+    const { currency, delivery_fee, getCartAmount, getTotalCartAmount } = useContext(ShopContext)
 
 
-    const totalAmount = getCartAmount()
+    const totalAmount = getTotalCartAmount()
     // console.log(totalAmount)
     return (
 

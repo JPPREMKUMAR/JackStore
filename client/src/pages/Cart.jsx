@@ -10,10 +10,12 @@ import CartTotal from "../components/CartTotal"
 const Cart = () => {
 
 
-    const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext)
+    const { products, currency, cartItems, updateQuantity, navigate, cartItemsList } = useContext(ShopContext)
 
     const [cartData, setCartData] = useState([])
-    console.log(cartItems)
+
+
+
 
 
     useEffect(() => {

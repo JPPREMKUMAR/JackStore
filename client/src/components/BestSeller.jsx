@@ -14,7 +14,7 @@ const BestSeller = () => {
         setBestSeller(bestProduct.slice(0, 4))
     }, [products])
 
-    console.log(bestSeller)
+    //console.log(bestSeller)
 
     return (
 
