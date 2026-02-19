@@ -6,18 +6,22 @@ import Title from '../components/Title'
 
 const Orders = () => {
 
-    const { backendUrl, token, currency } = useContext(ShopContext)
+    const { backendUrl, jwtToken, currency } = useContext(ShopContext)
 
     const [orderData, setOrderData] = useState([])
 
     const loadOrderData = async () => {
 
         try {
-            if (!token) {
+            if (!jwtToken) {
                 return null
             } else {
 
-                const response = await axios.post(backendUrl + "/api/order/userorders", {}, { headers: { token } })
+                const response = await axios.post(backendUrl + "/api/order/userorders", {}, {
+                    headers: {
+                        authorization: `Bearer ${jwtToken}`
+                    }
+                })
                 console.log(response.data.orders)
                 if (response.data.success) {
                     let allOrdersItem = []
@@ -48,7 +52,7 @@ const Orders = () => {
     useEffect(() => {
         loadOrderData()
 
-    }, [token])
+    }, [jwtToken])
 
 
     return (
@@ -73,7 +77,7 @@ const Orders = () => {
 
                             <div className="flex items-start gap-6 text-sm ">
 
-                                <img src={item.image[0]} className="w-16 sm:w-20" alt="" />
+                                <img src={item.image} className="w-16 sm:w-20" alt="" />
                                 <div>
 
                                     <p className="sm:text-base font-medium">{item.name}</p>

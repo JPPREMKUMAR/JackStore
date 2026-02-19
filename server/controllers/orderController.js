@@ -29,18 +29,22 @@ const placeOrder = async (req, res) => {
             paymentMethod: "COD",
             payment: false,
             date: Date.now()
-
         }
 
         const newOrder = new orderModel(orderData)
         await newOrder.save()
-        await userModel.findByIdAndUpdate(userId, { cartData: {} })
+
+        console.log(orderData)
 
 
-        Response.json({
+
+        res.status(200).json({
             success: true,
             message: "Order Placed"
         })
+
+
+
 
     } catch (error) {
 

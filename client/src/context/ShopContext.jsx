@@ -1,11 +1,9 @@
 "use client";
-
-
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify';
-
+import Cookies from "js-cookie"
 
 
 export const ShopContext = createContext()
@@ -20,43 +18,15 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(true)
     const [products, setProducts] = useState([])
-    const [token, setToken] = useState('')
     const [cartItems, setCartItems] = useState([])
-
     const [cartItemsList, setCartItemsList] = useState([])
-
-    //console.log(cartItems)
-
-
     const [totalCount, setTotalCount] = useState(0)
+    const [jwtToken, setJwtToken] = useState(undefined)
 
 
 
-    const updateQuantity = async (itemId, size, quantity) => {
-
-
-        let cartData = structuredClone(cartItems)
-        cartData[itemId][size] = quantity
-
-        setCartItems(cartData)
-
-        if (token) {
-            try {
-
-
-                const response = await axios.post(backendUrl + '/api/cart/update', { itemId, size, quantity }, { headers: { token } })
-
-
-
-            } catch (error) {
-
-                console.log(error)
-                toast.error(error.message)
-            }
-
-        }
-
-
+    const updateQuantity = () => {
+        console.log("qantity Update")
     }
 
     const getCartAmount = () => {
@@ -123,28 +93,7 @@ const ShopContextProvider = (props) => {
 
 
 
-    const getUserCart = async (token) => {
 
-        try {
-            const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
-            //console.log("Cart Items")
-            //console.log(response)
-            if (response.data.success) {
-                setCartItems(response.data.cartData.cartData)
-                //console.log(response.data.cartData.cartData)
-
-
-            }
-
-
-        } catch (error) {
-
-            console.log(error)
-            toast.error(error.message)
-
-        }
-
-    }
 
     const [timer, setTimer] = useState(0)
 
@@ -173,8 +122,8 @@ const ShopContextProvider = (props) => {
 
     const addToCart = (itemId, size, productData) => {
         //console.log(productData, itemId, size)
-        const { price, image } = productData
-        //console.log(image)
+        const { price, image, name } = productData
+        //console.log(name)
         let newCartList = []
         if (!size) {
             toast.error('Select Product Size')
@@ -189,7 +138,7 @@ const ShopContextProvider = (props) => {
                 itemId,
                 size,
                 quantity: 1,
-                price, image: image[0]
+                price, image: image[0], name
             }
             newCartList = [...cartItemsList, updatedItem]
             console.log("final cartList", newCartList)
@@ -203,7 +152,7 @@ const ShopContextProvider = (props) => {
                 if (item.itemId === itemId && item.size === size) {
                     console.log("Item is Present")
                     const updatedItem = {
-                        itemId: item.itemId, size: item.size, quantity: item.quantity + 1, price, image: image[0]
+                        itemId: item.itemId, size: item.size, quantity: item.quantity + 1, price, image: image[0], name
                     }
                     newCartFinalList = [...newCartFinalList, updatedItem]
                 } else {
@@ -231,18 +180,15 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         const getCartItemsList = JSON.parse(localStorage.getItem("cartItemsList")) || []
-
         console.log("cartItemsList", getCartItemsList)
-
         let countItems = 0
         getCartItemsList.map((item) => countItems += item.quantity)
-        //console.log(countItems)
-
         setCartItemsList(getCartItemsList)
         setTotalCount(countItems)
 
 
     }, [])
+
 
 
 
@@ -268,24 +214,24 @@ const ShopContextProvider = (props) => {
         getCartAmount,
         navigate,
         backendUrl,
-        token,
-        setToken,
+
         setCartItems, cartItemsList,
-        getTotalCartAmount
+        getTotalCartAmount,
+        jwtToken, setJwtToken, setCartItemsList
 
 
     }
 
 
     useEffect(() => {
-        if (!token && localStorage.getItem("token")) {
-            setToken(localStorage.getItem('token'))
-            getUserCart(localStorage.getItem('token'))
-        }
+
+        const newToken = Cookies.get("jwt_token")
+        setJwtToken(newToken)
+
 
     }, [])
 
-    //console.log(cartItems)
+
 
     return (
         <ShopContext.Provider value={value}>

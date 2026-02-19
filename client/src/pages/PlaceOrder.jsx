@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 
 const PlaceOrder = () => {
 
-    const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext)
+    const { navigate, backendUrl, jwtToken, getCartAmount, setCartItemsList, delivery_fee, cartItemsList } = useContext(ShopContext)
 
     const [method, setMethod] = useState('cod')
 
@@ -23,53 +23,10 @@ const PlaceOrder = () => {
         zipcode: '',
         country: '',
         phone: ''
-
-
     })
 
 
 
-
-    const initPay = (order) => {
-
-        const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-            amount: order.amount,
-            currency: order.currency,
-            name: 'Order Payment',
-            description: 'Order Payment',
-            order_id: order.id,
-            receipt: order.receipt,
-            handler: async (response) => {
-                console.log(response)
-                try {
-
-                    const { data } = await axios.post(backendUrl + '/api/order/verifyRazorpay', response, { headers: { token } })
-                    if (data.success) {
-                        navigate('/orders')
-                        setCartItems({})
-
-                    }
-
-                }
-
-
-                catch (error) {
-                    console.log(error)
-                    toast.error(error)
-
-
-                }
-
-            }
-
-        }
-
-        const rzp = new window.Razorpay(options)
-        rzp.open()
-
-
-    }
 
 
     const OnChangeHandler = (event) => {
@@ -85,83 +42,32 @@ const PlaceOrder = () => {
     const onSubmitHandler = async (event) => {
 
         event.preventDefault()
-
-        try {
-
-            let orderItems = []
-            for (const items in cartItems) {
-                for (const item in cartItems[items]) {
-                    if (cartItems[items][item] > 0) {
-                        const itemInfo = structuredClone(products.find(product => product._id === items))
-                        if (itemInfo) {
-                            itemInfo.size = item
-                            itemInfo.quantity = cartItems[items][item]
-                            orderItems.push(itemInfo)
-
-                        }
-
-                    }
-
-                }
-            }
-            //console.log(orderItems)
-
-            let orderData = {
-
-                address: formData,
-                items: orderItems,
-                amount: getCartAmount() + delivery_fee
-            }
-            //console.log(orderData)
-
-            switch (method) {
-                case 'cod':
-
-                    const response = await axios.post(backendUrl + "/api/order/place", orderData, { headers: { token } })
-                    console.log(response)
-                    if (response.data.success) {
-                        navigate("/orders")
-                        setCartItems({})
-
-                    } else {
-                        toast.error(response.data.message)
-                    }
-
-                    break;
-                case "stripe":
-                    const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
-
-                    if (responseStripe.data.success) {
-                        const { session_url } = responseStripe.data
-                        window.location.replace(session_url)
-
-                    } else {
-                        toast.error(responseStripe.data.message)
-                        console.log(responseStripe.data.message)
-
-                    }
-
-                    break
-                case "razorpay":
-                    const responseRazorpay = await axios.post(backendUrl + "/api/order/razorpay", orderData, { headers: { token } })
-
-                    if (responseRazorpay.data.success) {
-                        console.log(responseRazorpay.data.order)
-                        initPay(responseRazorpay.data.order)
-                    } else {
-
-                    }
+        //console.log(cartItemsList)
 
 
 
-                    break
-                default:
-                    break
+
+        const response = await axios.post(`${backendUrl}/api/order/place`, {
+            address: formData,
+            items: cartItemsList,
+            amount: getCartAmount()
+        }, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`
 
             }
+        })
 
-        } catch (error) {
-            console.log(error)
+
+        if (response.data.success) {
+            console.log(response)
+
+            localStorage.removeItem("cartItemsList")
+            setCartItemsList([])
+            navigate("/orders")
+            toast.success("Order Placed Successfully")
+        } else {
+            toast.error(response.messsage)
         }
 
 
@@ -298,7 +204,7 @@ const PlaceOrder = () => {
                     />
                     {/* -----------------------Payment Method Selection------------------ */}
                     <div className="flex gap-3 flex-col lg:flex-row ">
-                        <div onClick={() => setMethod('stripe')} className="flex items-center gap-3  p-2 px-3 cursor-pointer">
+                        <div className="flex items-center gap-3  p-2 px-3 cursor-pointer">
 
                             <p className={`min-w-3.5 h-3.5 borer rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
                             <img src={assets.stripe_logo}
@@ -306,7 +212,7 @@ const PlaceOrder = () => {
                                 alt=""
                             />
                         </div>
-                        <div onClick={() => setMethod('razorpay')} className="flex items-center gap-3  p-2 px-3 cursor-pointer">
+                        <div className="flex items-center gap-3  p-2 px-3 cursor-pointer">
 
                             <p className={`min-w-3.5 h-3.5  rounded-full ${method === 'razorpay' ? 'bg-green-400' : ''}`}></p>
                             <img src={assets.razorpay_logo}
@@ -327,7 +233,7 @@ const PlaceOrder = () => {
 
                         <button
                             type='submit'
-                            className='bg-black text-white px-16 py-3 text-sm' >PLACE ORDER</button>
+                            className='bg-black text-white px-16 py-3 text-sm cursor-pointer' >PLACE ORDER</button>
 
 
                     </div>
@@ -343,3 +249,6 @@ const PlaceOrder = () => {
 
 
 export default PlaceOrder
+
+
+

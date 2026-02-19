@@ -1,10 +1,9 @@
 import validator from 'validator'
 import bcrypt from 'bcrypt'
-
 import jwt from 'jsonwebtoken'
 import userModel from '../models/userModel.js'
 
-const createToken = (id) => {
+const generateToken = (id) => {
 
     return jwt.sign({ id }, process.env.JWT_SECRET);
 
@@ -30,11 +29,11 @@ const loginUser = async (req, res) => {
 
 
         if (isMatch) {
-            const token = createToken(user._id)
+            const jwtToken = generateToken(user._id)
             return res.json({
 
                 success: true,
-                message: "Login Successful", token: token
+                message: "Login Successful", jwt_token: jwtToken
             })
 
         } else {
@@ -107,10 +106,10 @@ const registerUser = async (req, res) => {
 
             const user = await newUser.save(); //_id is generated default 
 
-            const token = createToken(user._id);
+            const jwtToken = generateToken(user._id);
 
             res.json({
-                success: true, token
+                success: true, jwt_token: jwtToken
 
             })
         }
@@ -139,10 +138,11 @@ const adminLogin = async (req, res) => {
         const { email, password } = req.body
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
 
-            const token = jwt.sign(email + password, process.env.JWT_SECRET)
+            const jwtToken = jwt.sign(email + password, process.env.JWT_SECRET)
             res.json({
                 success: true,
-                message: token
+                message: jwtToken,
+                jwt_token: jwtToken
             })
 
         } else {

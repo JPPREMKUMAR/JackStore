@@ -2,21 +2,22 @@ import { assets } from '../assets/frontend_assets/assets'
 import { NavLink, Link } from 'react-router-dom'
 import React, { useContext, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
+import Cookies from "js-cookie"
 
 const Navbar = () => {
 
     const [visiable, setVisiable] = useState(false)
 
-    const { setShowSearch, totalCount, navigate, token, setToken, cartItems, setCartItems } = useContext(ShopContext)
+    const { setShowSearch, totalCount, navigate, cartItems, setCartItems, jwtToken, setJwtToken } = useContext(ShopContext)
 
 
-    //console.log(cartItems)
-
+    console.log(jwtToken)
     const logout = () => {
         navigate("/login")
-        localStorage.removeItem("token")
-        setToken('')
+        Cookies.remove("jwt_token")
+        setJwtToken(undefined)
         setCartItems({})
+
 
 
     }
@@ -54,13 +55,13 @@ const Navbar = () => {
                 <img src={assets.search_icon} className="w-5 cursor-pointer" alt="search-icon" onClick={() => setShowSearch(true)} />
                 <div className="group relative">
                     <img src={assets.profile_icon} alt="profile-icon"
-                        onClick={() => token ? null : navigate('/login')}
+                        onClick={() => jwtToken ? null : navigate('/login')}
                         className="w-5 curser-pointer" />
 
                     {/* Drop Down Menu */}
 
                     {
-                        token && <div className="group-hover:block hidden absolute dropdown-menu  right-0 pt-4">
+                        jwtToken && <div className="group-hover:block hidden absolute dropdown-menu  right-0 pt-4">
                             <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                                 <p className="cursor-pointer hover:text-black">My Profile</p>
                                 <p className="cursor-pointer hover:text-black" onClick={() => navigate("/orders")} >Orders</p>

@@ -8,20 +8,22 @@ const adminAuth = async (req, res, next) => {
     try {
 
 
-        const { token } = req.headers;
-        //console.log(token)
 
-        if (token === undefined) {
+        const authHeaders = req.headers["authorization"].split(" ")
+        //        console.log(authHeaders)
+        const jwtToken = authHeaders[1]
+
+        if (jwtToken === undefined) {
             return res.json({
                 success: false,
                 message: "Not Authorized Login Again"
             })
         } else {
 
-            const token_decode = jwt.verify(token, process.env.JWT_SECRET);
+            const payload = jwt.verify(token, process.env.JWT_SECRET);
             const adminDetails = process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD
 
-            if (token_decode === adminDetails) {
+            if (payload === adminDetails) {
                 next()
 
             } else {

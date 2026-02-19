@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react"
 import { ShopContext } from '../context/ShopContext'
 import axios from 'axios'
 import { toast } from "react-toastify"
-
+import Cookies from "js-cookie"
 
 
 const Login = () => {
@@ -11,7 +11,7 @@ const Login = () => {
     const [currentState, setCurrentState] = useState('Login')
 
 
-    const { token, setToken, backendUrl, navigate } = useContext(ShopContext)
+    const { jwtToken, setJwtToken, backendUrl, navigate } = useContext(ShopContext)
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -24,10 +24,13 @@ const Login = () => {
 
             if (currentState === 'Sign Up') {
                 const response = await axios.post(backendUrl + "/api/user/register", { name, email, password });
-                console.log(response.data)
+                //console.log(response.data)
                 if (response.data.success) {
-                    setToken(response.data.token)
-                    localStorage.setItem("token", response.data.token)
+
+                    const jwtToken = response.data.jwt_token
+                    setJwtToken(response.data.jwt_token)
+                    Cookies.set("jwt_token", jwtToken, { expires: 30 })
+                    navigate("/")
 
                 } else {
 
@@ -41,11 +44,10 @@ const Login = () => {
                 const response = await axios.post(backendUrl + '/api/user/login', { email, password })
                 console.log(response.data)
                 if (response.data.success) {
-
-                    setToken(response.data.token)
-                    localStorage.setItem("token", response.data.token)
-                    toast.success(response.data.message)
-
+                    const jwtToken = response.data.jwt_token
+                    setJwtToken(response.data.jwt_token)
+                    Cookies.set("jwt_token", jwtToken, { expires: 30 })
+                    navigate("/")
                 } else {
 
                     toast.error(response.data.message)
@@ -62,10 +64,10 @@ const Login = () => {
 
     useEffect(() => {
 
-        if (token) {
+        if (jwtToken) {
             navigate("/")
         }
-    }, [token])
+    }, [jwtToken])
 
     return (
 
