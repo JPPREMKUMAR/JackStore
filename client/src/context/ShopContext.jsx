@@ -55,6 +55,7 @@ const ShopContextProvider = (props) => {
         setCartItems(cartData)
 
 
+
         if (token !== '') {
 
             try {
@@ -186,6 +187,7 @@ const ShopContextProvider = (props) => {
             //console.log(response.data.cartData.cartData)
             if (response.success) {
                 setCartItems(response.data.cartData.cartData)
+                console.log(response.data.cartData.cartData)
 
 
             }
@@ -223,6 +225,15 @@ const ShopContextProvider = (props) => {
     }, [])
     //console.log(products)
 
+    useEffect(() => {
+        console.log("cartData", cartItems)
+        cartItems.forEach((item) => {
+            console.log(item)
+        })
+    }, [totalCount])
+
+
+
     const value = {
 
         products,
@@ -249,7 +260,6 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         if (!token && localStorage.getItem("token")) {
-
             setToken(localStorage.getItem('token'))
             getUserCart(localStorage.getItem('token'))
         }
