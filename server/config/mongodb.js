@@ -7,7 +7,7 @@ import mongoose from 'mongoose'
 const connectDB = async () => {
     try {
 
-        await mongoose.connect(`${process.env.MONGODB_URI}/JackStore`);
+        await mongoose.connect(`${process.env.MONGODB_URI}/jack-store`);
         console.log('MongoDb Connected Successfully.')
 
     } catch (error) {

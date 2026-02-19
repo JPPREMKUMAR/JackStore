@@ -14,7 +14,7 @@ const createToken = (id) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body
-        // check is user is present or not
+        console.log(email, password)
 
         const user = await userModel.findOne({ email: email });
 
