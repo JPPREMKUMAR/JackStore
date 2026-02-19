@@ -18,7 +18,7 @@ const NewsletterBox = () => {
         <div className="text-center mt-10 mb-10">
 
             <p className="text-2xl font-medium text-gray-800">Subscribe now & get 20% off</p>
-            <p className="text-gray-400 mt-3 ">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.
+            <p className="text-gray-400 mt-3 ">It is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.
 
             </p>
             <form onSubmit={onSubmitHandler} className="w-full sm:w-1/2 flex items-center gap-3 mx-auto my-10 py-5">

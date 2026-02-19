@@ -15,7 +15,7 @@ const Footer = () => {
 
                 <div>
                     <img src={assets.logo} alt="logo" className="mb-5 w-32 " />
-                    <p className="w-full md:w-2/3 text-gray-600" >Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.</p>
+                    <p className="w-full md:w-2/3 text-gray-600" >It is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.</p>
                 </div>
                 <div>
                     <p className="text-xl font-medium mb-5 ">COMPANY</p>
@@ -31,8 +31,8 @@ const Footer = () => {
 
                     <p className="text-xl font-medium mb-5">GET IN TOUCH</p>
                     <ul className="flex flex-col gap-1 text-gray-600">
-                        <li>+1-2212-222-344</li>
-                        <li>contactus@forever.com</li>
+                        <li>+91 6303845985</li>
+                        <li>jppremkumar012@gmail.com</li>
                     </ul>
                 </div>
             </div>
@@ -40,7 +40,7 @@ const Footer = () => {
             <div>
                 <hr className="text-white" />
 
-                <p className="py-5 text-sm text-center">Copyright 2025@ sampfovers.com - All Rights Reserved.</p>
+                <p className="py-5 text-sm text-center">Copyright 2025@ premkumar - All Rights Reserved.</p>
             </div>
 
 

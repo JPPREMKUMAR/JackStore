@@ -172,6 +172,10 @@ const ShopContextProvider = (props) => {
 
     }
 
+
+
+
+
     const getUserCart = async (token) => {
 
 
@@ -196,8 +200,23 @@ const ShopContextProvider = (props) => {
 
     }
 
+    const [timer, setTimer] = useState(0)
 
 
+    useEffect(() => {
+
+
+
+        const timerInter = setInterval(async () => {
+            const response = await axios.get(backendUrl + "/")
+            console.log(response.data)
+            setTimer(timer + 1)
+        }, 3600000)
+
+
+        return () => clearInterval(timerInter)
+
+    }, [])
 
     useEffect(() => {
         getProducts()
