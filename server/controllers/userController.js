@@ -79,7 +79,6 @@ const registerUser = async (req, res) => {
                 message: "User already exists."
             })
         } else {
-            // validating email format & stromg password
             if (!validator.isEmail(email)) {
                 return res.json({
                     success: false,
