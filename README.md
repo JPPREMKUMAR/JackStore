@@ -165,7 +165,7 @@ Role-based user management
 Performance optimization
 
 
-## 👨‍💻 Author
+👨‍💻 Author
 
 Prem Kumar
 MERN Stack Developer
